@@ -1,0 +1,34 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+*.egg
+.pytest_cache/
+.ruff_cache/
+
+# Virtual envs
+.venv/
+venv/
+env/
+
+# Eval outputs — large, regenerable
+results/*.json
+!results/.gitkeep
+
+# Model caches — never commit
+.cache/
+hf_cache/
+checkpoints/
+*.safetensors
+*.bin
+*.pt
+*.ckpt
+
+# Editor
+.DS_Store
+*.swp
+.vscode/
+.idea/
+
+# Cost ledger (sensitive — track separately if you want)
+docs/COSTS.private.md
