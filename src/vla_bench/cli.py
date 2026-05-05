@@ -28,6 +28,17 @@ def main(argv: list[str] | None = None) -> int:
         default=Path(__file__).parent.parent.parent / "results",
         help="Where to write results JSON",
     )
+    p_run.add_argument(
+        "--gpu-type",
+        default=None,
+        help="GPU type used, e.g. T4 or A100 (for cost tracking)",
+    )
+    p_run.add_argument(
+        "--cost-per-hour",
+        type=float,
+        default=None,
+        help="GPU cost in USD/hr (for cost tracking, e.g. 0.35 for Vast.ai 3090)",
+    )
 
     args = parser.parse_args(argv)
     if args.command != "eval":
@@ -59,6 +70,8 @@ def main(argv: list[str] | None = None) -> int:
         started_at=started_at,
         completed_at=completed_at,
         task_metrics=metrics,
+        gpu_type=args.gpu_type,
+        cost_per_hour_usd=args.cost_per_hour,
     )
 
     out_path = write_results(payload, args.results_dir)

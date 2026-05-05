@@ -15,9 +15,11 @@ class TaskMetrics:
     success_rate: float
     mean_steps: float
     mean_inference_ms: float
+    cost_usd: float | None = None  # GPU cost for this task's rollouts; None on free tier
+    gpu_type: str | None = None    # e.g. "T4", "A100", "CPU"
 
     def to_dict(self) -> dict:
-        return {
+        d: dict = {
             "task_id": self.task_id,
             "instruction": self.instruction,
             "rollouts": self.rollouts,
@@ -25,7 +27,10 @@ class TaskMetrics:
             "success_rate": round(self.success_rate, 4),
             "mean_steps": round(self.mean_steps, 2),
             "mean_inference_ms": round(self.mean_inference_ms, 2),
+            "cost_usd": round(self.cost_usd, 6) if self.cost_usd is not None else None,
+            "gpu_type": self.gpu_type,
         }
+        return d
 
 
 def compute_task_metrics(

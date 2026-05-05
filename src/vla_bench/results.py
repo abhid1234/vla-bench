@@ -7,7 +7,7 @@ from pathlib import Path
 from vla_bench.metrics import TaskMetrics, overall_success_rate, task_rate_stdev
 
 
-SCHEMA_VERSION = "0.1"
+SCHEMA_VERSION = "0.2"
 
 
 def build_results_payload(
@@ -19,14 +19,26 @@ def build_results_payload(
     started_at: datetime,
     completed_at: datetime,
     task_metrics: list[TaskMetrics],
+    gpu_type: str | None = None,
+    cost_per_hour_usd: float | None = None,
 ) -> dict:
+    duration_s = (completed_at - started_at).total_seconds()
+    gpu_hours = duration_s / 3600.0 if gpu_type is not None else None
+    total_cost = (
+        round(gpu_hours * cost_per_hour_usd, 4)
+        if gpu_hours is not None and cost_per_hour_usd is not None
+        else None
+    )
     return {
         "schema_version": SCHEMA_VERSION,
         "model": {"name": model_name, "config": model_config},
         "env": {"name": env_name, "config": env_config},
         "started_at": started_at.isoformat(),
         "completed_at": completed_at.isoformat(),
-        "duration_s": (completed_at - started_at).total_seconds(),
+        "duration_s": round(duration_s, 3),
+        "gpu_type": gpu_type,
+        "gpu_hours": round(gpu_hours, 6) if gpu_hours is not None else None,
+        "total_cost_usd": total_cost,
         "tasks": [t.to_dict() for t in task_metrics],
         "summary": {
             "num_tasks": len(task_metrics),

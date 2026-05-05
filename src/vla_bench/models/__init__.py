@@ -1,8 +1,12 @@
 from vla_bench.models.base import VLAModel
 from vla_bench.models.mock import MockVLA
+from vla_bench.models.openvla import OpenVLAOFTModel
+from vla_bench.models.pi05 import Pi05Model
 
 REGISTRY: dict[str, type[VLAModel]] = {
     "mock": MockVLA,
+    "openvla": OpenVLAOFTModel,
+    "pi05": Pi05Model,
 }
 
 

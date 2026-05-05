@@ -45,10 +45,11 @@ src/vla_bench/
 
 ## v1 model picks (locked)
 
-- **OpenVLA** (Stanford, 7B, Apache 2.0, 4-bit quantized) — most-cited baseline
-- **Pi0.5** (Physical Intelligence, ~2B open weights) — newest small open VLA
+- **OpenVLA-OFT** (Stanford, 7B, Apache 2.0) — Feb 2025 follow-up to base OpenVLA; 97.1% avg on LIBERO, de facto current baseline. Checkpoints: `moojink/openvla-oft-libero-spatial` and `moojink/openvla-oft-libero-goal`. CLI name: `openvla`.
+- **Pi0.5** (Physical Intelligence, ~2B, Apache 2.0) — open-weight via LeRobot at `lerobot/pi05_libero_finetuned`. Superior robustness on LIBERO-PRO perturbation eval (0.38 vs OFT). CLI name: `pi05`.
 
-GR00T-N1 (NVIDIA) deferred to a v2 sequel post.
+GR00T-N1 (NVIDIA) deferred to v2 — commercially licensed, not truly open-weight.  
+Base OpenVLA (`openvla/openvla-7b`) retired from v1 — superseded by OFT.
 
 ## v1 task picks (locked)
 
@@ -81,9 +82,11 @@ vla-bench eval --model mock --env mock-libero --tasks 5 --rollouts 5
 Confirmed 2026-04-28 via `/last30days "Vision Language Action models"`:
 - **Sereact raised $110M Series B** for VLA-driven robotics adaptability (Apr 27)
 - **Jensen Huang named VLAs as a foundational concept** at NVIDIA (The Drum, Apr 21)
-- **arXiv: "Characterizing VLA Models across XPUs"** (Zhou et al., Apr 28) — the closest existing academic work; it's a characterization paper, not a public benchmark. **The gap this project fills.**
-- HuggingPapers VLA Safety Survey + RedVLA red-teaming + EmbodiedMidtrain (Apr 27-28) — field is mature enough to survey, mature enough to benchmark
+- **arXiv: "Characterizing VLA Models across XPUs"** (Zhou et al., Apr 28) — hardware deployment paper (edge latency), not a model-quality benchmark. Orthogonal.
+- HuggingPapers VLA Safety Survey + RedVLA red-teaming + EmbodiedMidtrain (Apr 27-28) — field mature enough to survey and to benchmark
 - r/deeplearning thread "Understanding VLA Models — comments needed" — audience demand signal
+
+**Known competitor (confirmed 2026-04-29):** Allen AI's `vla-eval` (arXiv 2603.13966) — unified academic harness for 14 sim benchmarks, leaderboard at allenai.github.io/vla-evaluation-harness. It's for ML researchers, not practitioners. vla-bench's differentiation: cost disclosure per model per task + narrative accessibility (Substack/HN). Cite it, don't compete with it.
 
 ## How to work with Abhi
 

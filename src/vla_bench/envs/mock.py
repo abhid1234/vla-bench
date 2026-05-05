@@ -25,13 +25,19 @@ _TASK_INSTRUCTIONS: dict[str, str] = {
 class MockLIBEROEnv(Env):
     """Pure-Python deterministic env that mimics LIBERO's API surface.
 
-    A rollout "succeeds" when the cumulative L2 norm of issued actions
-    crosses a threshold within max_steps, with per-task threshold variance
-    so success rates spread across tasks and exercise the metrics pipeline.
-    Zero external dependencies — runs anywhere.
+    Success in each step is determined by whether mean(action) exceeds a
+    per-task threshold. With MockVLA bias=0.4 and action_dim=7, this gives
+    a spread of ~60% → ~10% success rates across tasks, exercising the
+    metrics pipeline without a GPU. Zero external dependencies.
     """
 
     name = "mock-libero"
+
+    # Calibrated for MockVLA(bias=0.4, action_dim=7): mean(action) ~ N(0.4, 0.378).
+    # Each threshold maps to a per-step success probability, which compounds
+    # over max_steps=50 to give the target per-task overall success rates
+    # (~60%, 53%, 46%, 39%, 32%, 26%, 20%, 15%, 11%, 7% across tasks 0-9).
+    _TASK_THRESHOLDS = [1.19, 1.22, 1.25, 1.28, 1.31, 1.34, 1.37, 1.40, 1.43, 1.47]
 
     def __init__(self, max_steps: int = 50, num_tasks: int | None = None) -> None:
         all_tasks = list(_TASK_INSTRUCTIONS.keys())
@@ -39,8 +45,7 @@ class MockLIBEROEnv(Env):
         self._max_steps = max_steps
         self._current_task: str | None = None
         self._step: int = 0
-        self._cumulative: float = 0.0
-        self._threshold: float = 0.0
+        self._action_threshold: float = 0.0
         self._rng: np.random.Generator | None = None
 
     def list_tasks(self) -> list[str]:
@@ -60,26 +65,24 @@ class MockLIBEROEnv(Env):
             raise ValueError(f"Task {task_id!r} not in this env's task set")
         self._current_task = task_id
         self._step = 0
-        self._cumulative = 0.0
         self._rng = np.random.default_rng(seed)
-        # Per-task difficulty: harder tasks (higher index) need larger cumulative action norm.
         task_idx = self._tasks.index(task_id)
-        self._threshold = 12.0 + task_idx * 1.5
+        self._action_threshold = self._TASK_THRESHOLDS[task_idx]
         return self._observation()
 
     def step(self, action) -> tuple[dict[str, Any], float, bool, dict[str, Any]]:
         if self._current_task is None or self._rng is None:
             raise RuntimeError("Call reset() before step().")
         action = np.asarray(action, dtype=np.float32)
-        self._cumulative += float(np.linalg.norm(action))
         self._step += 1
-        done = self._step >= self._max_steps or self._cumulative >= self._threshold
-        success = self._cumulative >= self._threshold
+        # Success if action mean exceeds task threshold — ties model bias to outcome.
+        success = bool(float(np.mean(action)) > self._action_threshold)
+        done = success or self._step >= self._max_steps
         return (
             self._observation(),
             1.0 if success else 0.0,
             done,
-            {"success": success, "cumulative": self._cumulative, "threshold": self._threshold},
+            {"success": success, "action_mean": float(np.mean(action)), "threshold": self._action_threshold},
         )
 
     def _observation(self) -> dict[str, Any]:

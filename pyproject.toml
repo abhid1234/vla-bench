@@ -26,7 +26,8 @@ real = [
     "torch>=2.3",
     "transformers>=4.45",
     "accelerate>=0.34",
-    "bitsandbytes>=0.43",  # 4-bit quantization for OpenVLA
+    "Pillow>=10.0",
+    "lerobot>=0.3",  # Pi0.5 via Physical Intelligence / HuggingFace LeRobot
 ]
 
 [project.scripts]
