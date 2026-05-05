@@ -28,8 +28,10 @@ real = [
     "accelerate>=0.34",
     "Pillow>=10.0",
     "lerobot>=0.3",  # Pi0.5 via Physical Intelligence / HuggingFace LeRobot
-    # OpenVLA-OFT's modeling_prismatic.py imports `prismatic`; ships with the OFT repo.
-    "openvla-oft @ git+https://github.com/moojink/openvla-oft.git",
+    # NOTE: OpenVLA-OFT's modeling_prismatic.py imports `prismatic` from the
+    # openvla-oft repo. Do NOT pip-install that repo — its setup.py pins
+    # torch==2.2.0 and tensorflow==2.15.0 which fight Colab/modern stacks.
+    # Instead, clone the repo as a sibling and add to PYTHONPATH (see Colab notebook).
 ]
 
 [project.scripts]
