@@ -71,6 +71,10 @@ class OpenVLAOFTModel(VLAModel):
             self.checkpoint,
             torch_dtype=torch.bfloat16,
             trust_remote_code=True,
+            # OpenVLA's PrismaticPreTrainedModel predates the _supports_sdpa class
+            # attr that newer transformers expects. Force eager attention to skip
+            # the SDPA capability check.
+            attn_implementation="eager",
         ).to(self.device)
         self._model.train(False)
 
