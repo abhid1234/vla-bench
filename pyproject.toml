@@ -28,6 +28,8 @@ real = [
     "accelerate>=0.34",
     "Pillow>=10.0",
     "lerobot>=0.3",  # Pi0.5 via Physical Intelligence / HuggingFace LeRobot
+    # OpenVLA-OFT's modeling_prismatic.py imports `prismatic`; ships with the OFT repo.
+    "openvla-oft @ git+https://github.com/moojink/openvla-oft.git",
 ]
 
 [project.scripts]
