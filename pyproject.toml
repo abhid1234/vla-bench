@@ -27,6 +27,7 @@ real = [
     "transformers>=4.45,<5.0",  # OpenVLA-OFT uses AutoModelForVision2Seq (renamed in 5.0)
     "accelerate>=0.34",
     "Pillow>=10.0",
+    "timm>=0.9.10,<1.0",  # OpenVLA-OFT modeling_prismatic.py hardcodes this range
     "lerobot>=0.3",  # Pi0.5 via Physical Intelligence / HuggingFace LeRobot
     # NOTE: OpenVLA-OFT's modeling_prismatic.py imports `prismatic` from the
     # openvla-oft repo. Do NOT pip-install that repo — its setup.py pins
