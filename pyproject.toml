@@ -24,7 +24,7 @@ dev = [
 real = [
     # Installed only when running real models. Heavy; skipped in CI.
     "torch>=2.3",
-    "transformers>=4.45",
+    "transformers>=4.45,<5.0",  # OpenVLA-OFT uses AutoModelForVision2Seq (renamed in 5.0)
     "accelerate>=0.34",
     "Pillow>=10.0",
     "lerobot>=0.3",  # Pi0.5 via Physical Intelligence / HuggingFace LeRobot

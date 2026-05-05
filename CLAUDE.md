@@ -45,7 +45,7 @@ src/vla_bench/
 
 ## v1 model picks (locked)
 
-- **OpenVLA-OFT** (Stanford, 7B, Apache 2.0) — Feb 2025 follow-up to base OpenVLA; 97.1% avg on LIBERO, de facto current baseline. Checkpoints: `moojink/openvla-oft-libero-spatial` and `moojink/openvla-oft-libero-goal`. CLI name: `openvla`.
+- **OpenVLA-OFT** (Stanford, 7B, Apache 2.0) — Feb 2025 follow-up to base OpenVLA; 97.1% avg on LIBERO, de facto current baseline. Checkpoints: `moojink/openvla-7b-oft-finetuned-libero-spatial` and `moojink/openvla-7b-oft-finetuned-libero-goal`. CLI name: `openvla`.
 - **Pi0.5** (Physical Intelligence, ~2B, Apache 2.0) — open-weight via LeRobot at `lerobot/pi05_libero_finetuned`. Superior robustness on LIBERO-PRO perturbation eval (0.38 vs OFT). CLI name: `pi05`.
 
 GR00T-N1 (NVIDIA) deferred to v2 — commercially licensed, not truly open-weight.  
