@@ -9,8 +9,8 @@ from vla_bench.models.base import VLAModel
 TaskSuite = Literal["spatial", "goal"]
 
 _CHECKPOINTS: dict[TaskSuite, str] = {
-    "spatial": "moojink/openvla-7b-oft-finetuned-libero-spatial",
-    "goal": "moojink/openvla-7b-oft-finetuned-libero-goal",
+    "spatial": "moojink/openvla-oft-libero-spatial",
+    "goal": "moojink/openvla-oft-libero-goal",
 }
 
 _UNNORM_KEYS: dict[TaskSuite, str] = {
@@ -51,11 +51,7 @@ class OpenVLAOFTModel(VLAModel):
 
     def _load(self) -> None:
         try:
-            from transformers import AutoProcessor
-            try:
-                from transformers import AutoModelForVision2Seq as _AutoVLA
-            except ImportError:
-                from transformers import AutoModelForImageTextToText as _AutoVLA
+            from transformers import AutoModelForVision2Seq, AutoProcessor
         except ImportError as e:
             raise ImportError(
                 "OpenVLA-OFT requires the [real] extra. "
@@ -67,14 +63,10 @@ class OpenVLAOFTModel(VLAModel):
         self._processor = AutoProcessor.from_pretrained(
             self.checkpoint, trust_remote_code=True
         )
-        self._model = _AutoVLA.from_pretrained(
+        self._model = AutoModelForVision2Seq.from_pretrained(
             self.checkpoint,
             torch_dtype=torch.bfloat16,
             trust_remote_code=True,
-            # OpenVLA's PrismaticPreTrainedModel predates the _supports_sdpa class
-            # attr that newer transformers expects. Force eager attention to skip
-            # the SDPA capability check.
-            attn_implementation="eager",
         ).to(self.device)
         self._model.train(False)
 
